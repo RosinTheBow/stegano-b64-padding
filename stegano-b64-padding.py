@@ -86,6 +86,7 @@ def encode(text, secret, verbose=False):
     words = text.split(' ')
     words_b64 = [b64encode((word+" ").encode('ascii')).decode('ascii') for word in words]
     secret_max_length = count_equals(words_b64)
+    if verbose: print('[*] Number of words: %d' % len(words))
     if verbose: print('[*] Maximum length of the secret: %d' % ((secret_max_length-16)//7))
     if verbose: print('[*] Length of the secret: %d' % len(secret))
     if 7*len(secret)+16 > secret_max_length:
@@ -138,6 +139,7 @@ if __name__ == '__main__':
     decoder = subparsers.add_parser('decode', help='decodes secret from encoded list')
     decoder.add_argument('-p', metavar='FILE', help='Encoded file to extract the secret from', type=pathlib.Path, required=True)
     decoder.add_argument('-o', metavar='FILE', help='File to write the output to. Default: stdout', type=pathlib.Path)
+    decoder.add_argument('-n', help='Do not show carrier text', action='store_true')
     decoder.add_argument('-v', help='Increase verbosity', action='store_true')
     
     encoder_plain = encoder.add_mutually_exclusive_group(required=True)
@@ -237,9 +239,11 @@ if __name__ == '__main__':
         else:
             f1 = sys.stdout
 
-        f1.write('[*] Visible decoding\n')
-        f1.write(decoded_string)
-        f1.write('\n\n')
+        carrier_flag = options.n
+        if carrier_flag:
+            f1.write('[*] Visible decoding\n')
+            f1.write(decoded_string)
+            f1.write('\n\n')
         f1.write('[*] Hidden message\n')
         f1.write(secret)
         f1.write('\n\n')
