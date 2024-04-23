@@ -240,7 +240,7 @@ if __name__ == '__main__':
             f1 = sys.stdout
 
         carrier_flag = options.n
-        if carrier_flag:
+        if not carrier_flag:
             f1.write('[*] Visible decoding\n')
             f1.write(decoded_string)
             f1.write('\n\n')
